@@ -15,6 +15,7 @@ export default function App() {
 
 
 
+
   
 
   async function search() {
@@ -22,11 +23,11 @@ export default function App() {
     try {
       
     
-      const response = await fetch(`http://localhost:1087/users/${username}`)
+      const response = await fetch(`http://localhost:1044/users/${username}`)
       let user = await response.json();
       
-        setUser(user[0]);
-        setFields(Object.keys(user[0]))
+        setUser(user);
+        setFields(Object.keys(user))
 
         console.log(user)
          

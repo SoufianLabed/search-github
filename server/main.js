@@ -64,140 +64,32 @@ sequelize.sync().then(function() {
 
 
 
- app.get('/users/:username', function (req, res) {
+ app.get('/users/:username', async function (req, res) {
     //res.send('GET request to the homepage');
    // searchGithub.findAll().then(notes => res.send(notes));
    const {username} = req.params
-
-   searchGithub.findAll({
+   const [user] = await searchGithub.findAll({
     where: {
       login: username,
     }
-
-    
-  }).then(notes => {
-    console.log(notes)
-
-    if(notes.length < 1){
+  })
+ 
+    if(!user){
      
-      axios.get(`https://api.github.com/users/${username}`)
-      .then(response => {
+      const response = await axios.get(`http://api.github.com/users/${username}`)
+
+      await searchGithub.create(response.data)
         
-        notes = response.data;    
-      
-        axios.post(`http://localhost:1087/users`, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body:{
-            id : notes.id,
-            login: notes.login,
-            node_id: notes.node_id,
-            avatar_url: notes.avatar_url,
-            gravatar_id: notes.gravatar_id,
-            url: notes.url,
-            html_url: notes.html_url, 
-            followers_url: notes.followers_url,
-            following_url: notes.following_url,
-            gists_url: notes.gists_url,
-            starred_url: notes.starred_url,
-            subscriptions_url: notes.subscriptions_url,
-            organizations_url: req.body.organizations_url,
-            repos_url: notes.repos_url,
-            events_url: notes.events_url,
-            received_events_url: notes.received_events_url,
-            type: notes.type,
-            site_admin: notes.site_admin,
-            name: notes.name,
-            company: notes.company,
-            blog: notes.blog,
-            location: notes.location,
-            email: notes.email,
-            hireable: notes.hireable,
-            bio: notes.bio,
-            twitter_username: notes.twitter_username,
-            public_repos: notes.public_repos,
-            public_gists: notes.public_gists,
-            followers: notes.followers,
-            following: notes.following,
-            created_at: notes.created_at,
-            updated_at: notes.updated_at
-          } 
-          
-        })
-        .then(response => {
-        })
-        .catch(error => {
-          console.log(error);
-        });
+      console.log(response.data)
+        res.json(response.data)
+        return
 
-        res.send(notes)
-
-
-
-      })
-      .catch(error => {
-        console.log(error);
-      });
-    }else{
-      res.send(notes)
     }
 
-   
-  });
 
-  });
-
-
-  
-
-app.post('/users',(req, res) => {
-    //console.log(req.body)
-      searchGithub.create({
-        
-            id : req.body.body.id,
-            login: req.body.body.login,
-            node_id: req.body.body.node_id,
-            avatar_url: req.body.body.avatar_url,
-            gravatar_id: req.body.body.gravatar_id,
-            url: req.body.body.url,
-            html_url: req.body.body.html_url, 
-            followers_url: req.body.body.followers_url,
-            following_url: req.body.body.following_url,
-            gists_url: req.body.body.gists_url,
-            starred_url: req.body.body.starred_url,
-            subscriptions_url: req.body.body.subscriptions_url,
-            organizations_url: req.body.body.organizations_url,
-            repos_url: req.body.body.repos_url,
-            events_url: req.body.body.events_url,
-            received_events_url: req.body.body.received_events_url,
-            type: req.body.body.type,
-            site_admin: req.body.body.site_admin,
-            name: req.body.body.name,
-            company: req.body.body.company,
-            blog: req.body.body.blog,
-            location: req.body.body.location,
-            email: req.body.body.email,
-            hireable: req.body.body.hireable,
-            bio: req.body.body.bio,
-            twitter_username: req.body.body.twitter_username,
-            public_repos: req.body.body.public_repos,
-            public_gists: req.body.body.public_gists,
-            followers: req.body.body.followers,
-            following: req.body.body.following,
-            created_at: req.body.body.created_at,
-            updated_at: req.body.body.updated_at
-      }).then( (rest) => {
-        res.send("donnée correctement ajouté")
-      })
-      .catch((err) => { console.log(err); throw err })
-      .finally(() => {
-          
-       
-      });
-  
-  
-  });
+    res.json(user)
+     
+    })
 
 
   app.listen(port, () => {
