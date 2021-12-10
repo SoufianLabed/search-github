@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { StyleSheet, Text, Button, View, TextInput } from 'react-native';
+import { StyleSheet, Text, Button, View, TextInput,Image } from 'react-native';
 import tailwind from 'tailwind-rn';
 
 
@@ -29,7 +29,7 @@ export default function App() {
         setUser(user);
         setFields(Object.keys(user))
 
-        console.log(user)
+        console.log(user.avatar_url)
          
     } catch (error) {
       console.log(error.message);
@@ -40,42 +40,41 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-    <TextInput 
-      style={tailwind('placeholder:italic placeholder:text-gray-400 block border border-gray-300 rounded-md py-2 pl-9 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm')}
-      onChangeText={setUsername}
-      value={username}
-    />
+      <View style={styles.topContainer}>
+        <Text style={styles.h1}>Search Gitlab</Text>
+        <Text style={styles.h2}>Renseigner un utilisateur :</Text>
+        <TextInput 
+          style={tailwind('placeholder:italic placeholder:text-gray-400 block border border-gray-300 rounded-md py-2 pl-9 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm')}
+          onChangeText={setUsername}
+          value={username}
+        />
+        <Button
+          onPress={search}
+          title="Rechercher"
+          style={styles.button}
+        />
+      </View>
 
-    <Button
-      onPress={search}
-      title="Search"
-      color="#841584"
-    />
-
-    <View>
-    {fields.length > 0 ? 
-      
-      (
-        <div style={tailwind('rounded-lg border-8 ')}>
-          {fields.map(field => (
-              
-              <div style={tailwind('pl-8 flex block border border-gray-300 rounded-lg bg-green-400 text-center text-blue-900 font-bold')} ><p>{field.replace("_"," ")} : </p><p> {user[field]}</p></div>
-                     
-          ))}
-        </div>
-      )
-      
-      :
-
-      (<div>AUCUNE VALEUR</div>)}
+      <View style={styles.middleContainer}>
+        <Text style={styles.h2}>Les informations de l'utilisateur :</Text>
 
 
-    </View>
+          <Image
+            style={styles.logo}
+            source={{
+              uri: user.avatar_url
+            }}
+          />
+          <Text style={styles.title}>{user.login}</Text>
+      </View>
 
- 
+      <View style={styles.buttonContainer}>
+        <Text style={styles.h3}>Soufian Labed - Efrei Paris</Text>
+      </View>
+
  
   
-  </View>
+    </View>
   );
 }
 
@@ -90,5 +89,48 @@ const styles = StyleSheet.create({
   row_user:{
     borderColor: 'black',
     borderWidth : '4px'
-  }
+  },
+  button: {
+    backgroundColor: "#008F68",
+    marginTop: 5,
+  },
+  h1: {
+    color: '#008F68',
+    fontSize: 40,
+  },
+  h2: {
+    color: '#FAE042',
+    alignItems: "center",
+    fontSize: 18,
+    marginTop: 8,
+  },
+  h3: {
+    color: '#008F68',
+    fontSize: 10,
+  },
+  title: {
+    color: '#008F68',
+    fontSize: 20,
+  },
+  logo:{
+    width:'200px',
+    height:'200px'
+  },
+  topContainer: {
+    flex: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  middleContainer: {
+    flex: 3,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bottomContainer: {
+    justifyContent: 'center',
+    width: '90%',
+    margin: 20,
+    padding: 10,
+  },
+  
 });
