@@ -26,6 +26,8 @@ export default function App() {
       
       setUser({})
       setFields([])
+
+      /*CHANGER L'ADRESSE IP PAR UNE ADRESSE NGROK POUR LANCER L'APP SUR UN AUTRE APPAREIL*/ 
       const response = await fetch(`http://localhost:1087/users/${username}`)
       let user = await response.json();
 
